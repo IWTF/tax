@@ -1,0 +1,68 @@
+zzz<view class='card'>
+  <view class='header'>
+    <view class='m_title'>工资单</view>
+    <view class='avatar'>
+      <open-data type="userAvatarUrl"></open-data>
+    </view>
+  </view>
+  <image class='bg' src='../../images/resultBg.png'></image>
+  <view class='card_child'>
+    <view style='font-weight: 600;'>税后工资为：</view>
+    <view style='font-size: 30px; font-weight: 600;color: #4475fd;'>{{reallySalary}}</view>
+    <view>
+      <view>
+        <a style="font-weight: bold;">纳税：</a> 
+        {{tax}}
+      </view>
+      <view style='font-size: 16px; color: #8a8a8a;margin: 30rpx 0;'>五险一金明细</view>
+      <view class='detail'>
+        <!-- 三险 -->
+        <view class='child_container'>
+          <view>
+            <view class='title'>养老保险</view>
+            <view class='content'>{{old}}</view>
+          </view>
+          <view>
+            <view class='title'>医疗保险</view>
+            <view class='content'>{{doctor}}</view>
+          </view>
+          <view>
+            <view class='title'>失业保险</view>
+            <view class='content'>{{job}}</view>
+          </view>
+        </view>
+
+        <!-- 公积金 -->
+        <view class='child_container'>
+          <view>
+            <view class='title'>工伤保险</view>
+            <view class='content'>0.00</view>
+          </view>
+          <view>
+            <view class='title'>生育保险</view>
+            <view class='content'>0.00</view>
+          </view>
+          <view>
+            <view class='title'>公积金</view>
+            <view class='content'>{{fund}}</view>
+          </view>
+        </view>
+      </view>
+      <!-- <view class='message'>
+        <view wx:for="{{message[chosenMessage]}}"
+          wx:key="item.id">
+          {{item}}  
+        </view>
+      </view> -->
+    </view>
+  </view>
+
+  <button class='shareTab' bindgetuserinfo='show' open-type='getUserInfo'>
+    <view style='margin: -8rpx 10rpx 0 0;'>看看我是啥层次</view>
+    <image src='../../images/click.png'></image>
+  </button>
+
+  <!-- 分享功能 -->
+  <canvas-share bindclose="close" userInfo="{{userInfo}}"
+    visible="{{visible}}" sayings="{{message[chosenMessage]}}"/>
+</view>

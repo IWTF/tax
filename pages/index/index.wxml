@@ -1,0 +1,139 @@
+<!--index.wxml-->
+<view class="container">
+  <view class='t_container'>
+    <view class='{{ current == 1 ? "item_on" : ""}}' bindtap="salary_on">工资个人所得税计算</view>
+    <view class='{{ current == 2 ? "item_on" : ""}}' bindtap="bonus_on">奖金个人所得税计算</view> 
+  </view>
+  <!-- 工资个税计算Form -->
+  <view class='f_container' wx:if="{{current == 1}}">
+    <form bindsubmit='submintSalary'>
+      <view class='c_container'>
+        <label class='f_title'>税前工资</label>
+        <input placeholder='输入税前月收入' bindinput='salaryInput'
+          type="number"
+          name="Monthsalary" class='input' value='{{salary}}'
+          placeholder-class='input_placeholder'></input>
+        <view class='ji'>
+          <span style="flex: 0.8">社保基数:</span>
+          <input placeholder='输入基数' value='{{base}}' bindinput='baseInput'
+            type="number"
+            name="socialBase" placeholder-style='color: #cfcfcf;'
+            style="flex: 1;" class='ji_cinput'></input>
+          <span>公积金基数:</span>
+          <input placeholder='输入基数' value='{{base}}'
+            type="number"
+            name="FundBase" placeholder-style='color: #cfcfcf;'
+            style="flex: 1;" class='ji_cinput'></input>
+        </view>
+        <view class='dis'>*各地各单位执行的基数不一，默认各省缴费基数下限</view>
+      </view>
+      <view class='c_container'>
+        <label class='f_title'>所在城市</label>
+        <view class='input' style='position: relative;'>
+          <picker
+            mode="region"
+            bindchange="bindRegionChange"
+          >
+            <view class="picker">
+              {{currentProvince}}  {{currentCity}}
+            </view>
+          </picker>
+          <!-- <span wx:if="{{currentCity != ''}}">{{currentProvince}}  {{currentCity}}</span> -->
+          <!-- <span wx:else>请选择所在城市</span> -->
+          <view class='position' catchtap='getPosition'>
+            <image src='../../images/position.png'></image>
+          </view>
+        </view>
+        <view class="dis" wx:if="{{showTi}}">*点击城市可以进行选择</view>
+      </view>
+      <view class='c_container'>
+        <label class='f_title'>公积金比例</label>
+        <input placeholder='输入公积金比例' type="number"
+          bindinput='rateInput' value='{{FundRate}}'
+          name="FundRate" class='input rate' style='position: relative;'
+          placeholder-class='input_placeholder'></input>
+        <p class="dis">*各地各单位不统一，多数为8%，如有差异敬请修改</p>
+      </view>
+      <view class='c_container' style='margin-bottom: 20rpx;'>
+        <label class='f_title'>专项抵扣</label>
+        <view class='deduction'>
+          <input placeholder='输入抵扣金额'
+            type="number" style='border: none;'
+            name='deductionMoney' style='margin: 8rpx 0 0 20rpx;'
+            placeholder-class='input_placeholder'
+            value='{{de}}' bindinput='deInput'></input>
+            <view catchtap='more' class='deMore'>+</view>
+        </view>
+        
+        <view class="dis">
+          <image src='../../images/question.png' class='question' bindtap='showDetail'></image>
+          <view class='til' bindtap='showDetail'>个税专项抵扣，点上面'+'帮您计算</view>
+          <view hidden='{{!showDetail}}'>
+            包括：1.住房支出；2.子女教育支出；3.赡养老人；4.继续教育；5.大病支出等五项。
+          </view>
+        </view>
+      </view>
+      <button class='calculate' form-type='submit'>算一算</button>
+    </form>
+  </view>
+
+  <!-- 奖金个税计算form -->
+  <view wx:if='{{current == 2}}' class='f_container'>
+    <form bindsubmit='bonus'>
+      <view class='c_container'>
+        <label class='f_title'>本月工资</label>
+        <input placeholder='输入本月收入' bindinput='salaryInput'
+          type="number"
+          name="Monthsalary" class='input' value='{{salary}}'
+          placeholder-class='input_placeholder'></input>
+        <view class='ji'>
+          <span style="flex: 0.8">社保基数:</span>
+          <input placeholder='输入基数' value='{{base}}' bindinput='baseInput'
+            type="number"
+            name="socialBase" placeholder-style='color: #cfcfcf;'
+            style="flex: 1;" class='ji_cinput'></input>
+          <span>公积金基数:</span>
+          <input placeholder='输入基数' value='{{base}}'
+            type="number"
+            name="FundBase" placeholder-style='color: #cfcfcf;'
+            style="flex: 1;" class='ji_cinput'></input>
+        </view>
+        <view class='dis'>*各地各单位执行的基数不一，默认各省缴费基数下限</view>
+      </view>
+      <view class='c_container'>
+        <label class='f_title'>所在城市</label>
+        <view class='input' style='position: relative;'>
+          <picker
+            mode="region"
+            bindchange="bindRegionChange"
+            custom-item="{{customItem}}"
+          >
+            <view class="picker">
+              {{currentProvince}}  {{currentCity}}
+            </view>
+          </picker>
+          <!-- <span wx:if="{{currentCity != ''}}">{{currentProvince}}  {{currentCity}}</span> -->
+          <!-- <span wx:else>请选择或定位您所在城市</span> -->
+          <view class='position' catchtap='getPosition'>
+            <image src='../../images/position.png'></image>
+          </view>
+        </view>
+        <view class="dis" wx:if="{{showTi}}">*点击城市可以进行选择</view>
+      </view>
+      <view class='c_container'>
+        <label class='f_title'>公积金比例</label>
+        <input placeholder='输入公积金比例' type="number"
+          bindinput='rateInput' value='{{FundRate}}'
+          name="FundRate" class='input rate' style='position: relative;'
+          placeholder-class='input_placeholder'></input>
+        <p class="dis">*各地各单位不统一，多数为8%，如有差异敬请修改</p>
+      </view>
+      <view class='f_title'>年终奖金</view>
+      <input placeholder='输入年终奖金' placeholder-class='input_placeholder'
+        class='input' name="bonus" type='number'></input>
+      <button class='calculate' style='margin-top: 20rpx;'
+        form-type='submit'>算一算</button>
+    </form>
+  </view>
+</view>
+ 

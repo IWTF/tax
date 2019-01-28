@@ -1,0 +1,83 @@
+<view>
+  <view class='m_title'>请选择抵扣项</view>
+
+  <view>
+    <view wx:for="{{myData}}" wx:key="{{item.id}}">
+      <view class='container'>
+        <view class='title'>{{item.title}}</view>
+        <label class='c_title' wx:if="{{item.c_title1 != ''}}">
+          {{item.c_title1}}
+        </label>
+        <view class='option_container'>
+          <view wx:for="{{item.tabs}}" wx:key="item.id"
+            class='option' catchtap="chooseTab" id="{{index*10+cindex}}"
+            wx:for-item="citem" wx:for-index="cindex"
+            class="{{cindex == item.cur ? 'option_on':'option'}}">
+            {{citem}}
+          </view>
+          <input wx:if="{{index == 1}}" placeholder='自定义'
+            type="number" value='{{childInput}}'
+            class='option' style="width: 150rpx;"
+            bindinput='childInput'
+            bindfocus="cancel"></input>
+        </view>
+
+        <!-- 添加house子选项 -->
+        <view hidden='{{index != 0 || item.cur != 1}}'>
+          <view wx:for="{{item.childOption}}" wx:key="item.id"
+            wx:for-item="citem" wx:for-index="cindex"
+            catchtap='childOption' id="{{index*10+cindex}}"
+            style='padding: 8rpx 0;'
+            class="{{cindex == item.childCur ? 'item_on':''}}">
+            {{citem}}
+          </view>
+        </view>
+
+        <!-- 添加子女教育子选项 -->
+        <view  wx:if="{{index == 1}}"
+         style='width: 100%;'>
+          <label>抵扣方式</label>
+          <view class='option_container'>
+            <view catchtap='choose0'
+              class="{{current == 1 ? 'option_on':'option'}}">
+              单独抵扣
+            </view>
+            <view catchtap='choose1'
+              class="{{current == 2 ? 'option_on':'option'}}">
+              共同抵扣
+            </view>
+          </view>
+        </view>
+
+        <!-- 添加赡养父母子选项 -->
+        <view hidden='{{index != 2 || item.cur != 1}}' class='childItem2' style='width:100%;'>
+          <view>自定义金额: </view>
+          <input placeholder='不超过1000元/月' value='{{parentInput}}'
+            bindinput="parentInput" type="number"></input>
+        </view>
+        <view>
+          抵扣金
+          <a class="{{item.value == ''?'':'stress'}}">{{item.value}}</a>
+          元/月
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 大病支出项 -->
+  <view class='container'>
+    <view class='title'>大病支出</view>
+    <view class='childItem2'>
+      <view>金额: </view>
+      <input placeholder='限15000以上/年'
+        class='option' value='{{sickness.value}}'
+        type="number" bindinput="sickInput"></input>
+    </view>
+    <view>
+      抵扣金
+      <a class="{{sickness.value == ''?'':'stress'}}">{{sickness.value}}</a>
+      元/月
+    </view>
+  </view>
+  <button class='btn' bindtap='totle'>确定</button>
+</view>
