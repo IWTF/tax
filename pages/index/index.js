@@ -139,10 +139,14 @@ Page({
       var s = wx.getStorageSync('salary')
       var b = wx.getStorageSync('base')
       var r = wx.getStorageSync('fundRate')
+      var p = wx.getStorageSync('province')
+      var c = wx.getStorageSync('city')
       this.setData({
         salary: s,
         base: b,
-        FundRate: r
+        FundRate: r,
+        currentProvince: p,
+        currentCity: c
       })
       console.log("getStorage")
     }
@@ -239,6 +243,8 @@ Page({
     wx.setStorageSync('salary', this.data.salary)
     wx.setStorageSync('base', this.data.base)
     wx.setStorageSync('fundRate', this.data.FundRate)
+    wx.setStorageSync('province', this.data.currentProvince)
+    wx.setStorageSync('city', this.data.currentCity)
     wx.navigateTo({
       url: '../logs/logs'
     })
@@ -319,7 +325,7 @@ Page({
   bonus(e) {
     console.log('bonus', e.detail.value.bonus)
 
-    var MonthBonus = e.detail.value.bonus / 12
+    var MonthBonus = e.detail.value.bonus / 12  // 计算按月奖金计算，所有先转化
     var FundBase = e.detail.value.FundBase
     var FundRate = e.detail.value.FundRate
     var Monthsalary = e.detail.value.Monthsalary
@@ -333,7 +339,6 @@ Page({
       return;
     }
 
-    // 将月工资， 保险基数，比例等json化
     var dataBase = {}
 
     dataBase.Monthsalary = Monthsalary
@@ -341,15 +346,18 @@ Page({
     dataBase.FundRate = FundRate
     dataBase.socialBase = socialBase
 
+    // 将月工资， 保险基数，比例等json化，方便页面传值
     dataBase = JSON.stringify(dataBase)
 
     // 计算工资的个人所得税
-    var t = salaryTax.tax(dataBase)
+    var t = salaryTax.tax(dataBase)  // 调用tax函数，计算工资交税情况
     console.log('本月工资交税金额为： ', t)
     t = parseFloat(t)
     t = t .toFixed(2)
 
-    var tiao = MonthBonus
+    // 根据网上方法，当月工资薪金所得低于税法规定的费用扣除额
+    // 应纳税额=(雇员当月取得全年一次性奖金-雇员当月工资薪金所得与费用扣除额的差额)×适用税率-速算扣除数。
+    var tiao = MonthBonus // 分段条件
     if(t < 0) {
       tiao = MonthBonus + t/12
     }
@@ -393,7 +401,7 @@ Page({
     tax = parseFloat(tax)
     MonthBonus = parseFloat(MonthBonus)
 
-    var reallyBonus = (MonthBonus - tax) * 12
+    var reallyBonus = (MonthBonus - tax) * 12 // 转化为年奖金
     var bonusIndex
     if (reallyBonus < 10000) {
       bonusIndex = 2
@@ -408,7 +416,7 @@ Page({
 
     // 保留2位
     reallyBonus = reallyBonus.toFixed(2)
-    tax = tax.toFixed(2)
+    tax = tax.toFixed(2) // 此处仍为月税
     
     this.setData({
       bonusIndex: bonusIndex,
@@ -420,7 +428,8 @@ Page({
     var summary = {}
     summary.bonus = e.detail.value.bonus
     summary.reallyBonus = reallyBonus
-    summary.tax = tax
+    summary.tax = tax * 12 // 转化为12个月的税值
+    summary.tax = summary.tax.toFixed(2)
     console.log('summary: ', summary)
 
     summary = JSON.stringify(summary)
